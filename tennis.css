@@ -1,22 +1,21 @@
 body {
-    margin: 5px;
-    margin-top: 50px;
-    height: 100vh;
-    background: white;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    font-family: Arial, sans-serif;
+    justify-content: flex-start;
+    align-items: center;
 }
-  
+html, body {
+    height: 100%;
+    overflow: hidden; /* prevents scrollbars */
+} 
 #gameCanvas {
     background-color: #2e8b57; 
     display: block;
     border: 3px solid #145214; 
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 100, 0, 0.7);
-    max-width: 100%;
+    width: 90vw;
+    max-width: 800px;
     height: auto;
 }
   
@@ -91,11 +90,20 @@ button {
 } 
 footer {
     margin-top: auto;
-    padding: 15px 0;
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
     color: #145214;
-    background-color: #f0f0f0;
-    width: 100%;
-    position: relative;
+    padding: 10px 0;
+}
+@media (max-height: 700px) {
+    #gameCanvas {
+      height: 250px;
+    }
+    #mobileControls button, #startBtn, #overlay button {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+    footer {
+      font-size: 12px;
+    }
 }
