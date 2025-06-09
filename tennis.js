@@ -80,7 +80,18 @@ function update() {
     ballX += ballSpeedX;
     ballY += ballSpeedY;
     if (ballY <= 0 || ballY >= canvas.height) ballSpeedY = -ballSpeedY;
-    aiY += ((ballY - (aiY + paddleHeight / 2))) * 0.1;
+    const aiCenter = aiY + paddleHeight / 2;
+    const diff = ballY - aiCenter;
+    const aiSpeedLimit = 4; // max AI paddle speed per frame
+    
+    if (Math.abs(diff) > 10) { // dead zone of 10px to not be perfect
+      // Move AI paddle toward ball, but limit speed
+      aiY += Math.sign(diff) * Math.min(aiSpeedLimit, Math.abs(diff) * 0.1);
+    }
+    
+    // Clamp AI paddle inside canvas
+    aiY = Math.min(canvas.height - paddleHeight, Math.max(0, aiY));
+    
   
     if (ballX - ballRadius < paddleWidth && ballY > playerY && ballY < playerY + paddleHeight) {
       ballSpeedX = -ballSpeedX;
