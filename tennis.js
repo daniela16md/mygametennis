@@ -181,3 +181,19 @@ function resizeCanvas() {
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
+// === Touch Move Paddle ===
+canvas.addEventListener("touchstart", handleTouch);
+canvas.addEventListener("touchmove", handleTouch);
+
+function handleTouch(event) {
+  event.preventDefault();
+  const touch = event.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  const touchY = touch.clientY - rect.top;
+
+  // Center paddle on touch Y (clamped within canvas)
+  playerY = Math.min(
+    canvas.height - paddleHeight,
+    Math.max(0, touchY - paddleHeight / 2)
+  );
+}
