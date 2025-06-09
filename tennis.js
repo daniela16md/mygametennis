@@ -174,10 +174,28 @@ function restartGame() {
 
 // Resize for responsiveness
 function resizeCanvas() {
-  const ratio = canvas.width / canvas.height;
-  const width = Math.min(window.innerWidth - 20, 800);
-  canvas.style.width = width + "px";
-  canvas.style.height = width / ratio + "px";
+    // Define max width and height you want for the game canvas
+    const maxWidth = window.innerWidth - 20;
+    const maxHeight = window.innerHeight - 120; // leave room for buttons and footer
+  
+    // Keep aspect ratio same as original canvas (800x500)
+    const aspectRatio = 800 / 500;
+  
+    let newWidth = maxWidth;
+    let newHeight = newWidth / aspectRatio;
+  
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight;
+      newWidth = newHeight * aspectRatio;
+    }
+  
+    // Set actual canvas size (pixel size)
+    canvas.width = 800;  // fixed logical pixels for drawing
+    canvas.height = 500;
+  
+    // Set CSS size to fit the screen with aspect ratio preserved
+    canvas.style.width = newWidth + "px";
+    canvas.style.height = newHeight + "px";
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
