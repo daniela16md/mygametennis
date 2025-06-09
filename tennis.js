@@ -61,12 +61,7 @@ function gameLoop() {
 
 // Update logic
 function update() {
-    // 👇 REMOVE these 3 lines — they're interfering:
-    // if (keysPressed["ArrowUp"]) moveDirection = -1;
-    // else if (keysPressed["ArrowDown"]) moveDirection = 1;
-    // else moveDirection = 0;
-  
-    // ✅ NEW: use keys independently
+   
     let keyDirection = 0;
     if (keysPressed["ArrowUp"]) keyDirection = -1;
     else if (keysPressed["ArrowDown"]) keyDirection = 1;
@@ -148,8 +143,8 @@ function checkGameOver() {
   if (playerScore >= maxScore || aiScore >= maxScore) {
     gameRunning = false;
     const message = playerScore > aiScore
-      ? "🎉 Vous avez gagné !"
-      : "Ting 🐭 a gagné...";
+      ? "🎉 Winner!"
+      : "Ting 🐭 winner!";
     document.getElementById("message").textContent = message;
     document.getElementById("overlay").style.display = "flex";
     document.getElementById("startBtn").style.display = "block";
@@ -166,32 +161,17 @@ function stopMove() {
 function togglePause() {
   if (!gameRunning) return;
   gamePaused = !gamePaused;
-  document.getElementById("pauseBtn").textContent = gamePaused ? "▶ Reprendre" : "⏸ Pause";
+  document.getElementById("pauseBtn").textContent = gamePaused ? "▶ Play" : "⏸ Pause";
 }
 function restartGame() {
   initGame();
 }
 
-// Resize for responsiveness
 function resizeCanvas() {
+    const maxWidth = window.innerWidth - 20;
+    const maxHeight = window.innerHeight - 120; 
+  
     const aspectRatio = 800 / 500;
-    const marginVertical = 120;  // space for buttons/footer
-    const marginHorizontal = 20; // small horizontal margin
-  
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-  
-    let maxWidth, maxHeight;
-  
-    if (vw > vh) {
-      // Landscape: limit height more strictly to avoid too tall canvas
-      maxHeight = vh - marginVertical * 1.5; // smaller height in landscape
-      maxWidth = vw - marginHorizontal;
-    } else {
-      // Portrait: more height available
-      maxHeight = vh - marginVertical;
-      maxWidth = vw - marginHorizontal;
-    }
   
     let newWidth = maxWidth;
     let newHeight = newWidth / aspectRatio;
@@ -201,11 +181,9 @@ function resizeCanvas() {
       newWidth = newHeight * aspectRatio;
     }
   
-    // Set canvas internal pixel size fixed (for game logic)
-    canvas.width = 800;
-    canvas.height = 500;
+    canvas.width = 700;  
+    canvas.height = 400;
   
-    // Set CSS size to scale canvas visually
     canvas.style.width = newWidth + "px";
     canvas.style.height = newHeight + "px";
 }
