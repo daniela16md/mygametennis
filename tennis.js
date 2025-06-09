@@ -14,9 +14,11 @@ let playerScore = 0, aiScore = 0;
 let gameRunning = false;
 let gamePaused = false;
 let loopId = null;
+
+let moveDirection = 0;
 const keysPressed = {};
 
-// Key listeners
+// Input
 document.addEventListener("keydown", (e) => {
   keysPressed[e.key] = true;
   if (e.code === "Space") togglePause();
@@ -25,10 +27,9 @@ document.addEventListener("keyup", (e) => {
   keysPressed[e.key] = false;
 });
 
-// === INIT GAME ===
+// Game init
 function initGame() {
   cancelAnimationFrame(loopId);
-  loopId = null;
 
   playerY = canvas.height / 2 - paddleHeight / 2;
   aiY = playerY;
@@ -42,35 +43,100 @@ function initGame() {
   gamePaused = false;
 
   document.getElementById("overlay").style.display = "none";
-  const pauseBtn = document.getElementById("pauseBtn");
-  if (pauseBtn) pauseBtn.textContent = "⏸ Pause";
+  document.getElementById("pauseBtn").textContent = "⏸ Pause";
+  document.getElementById("startBtn").style.display = "none";
 
-  const startBtn = document.getElementById("startBtn");
-  if (startBtn) startBtn.style.display = "none";
+  gameLoop();
+}
 
+// Game loop
+function gameLoop() {
+  if (!gameRunning) return;
+  if (!gamePaused) {
+    update();
+    draw();
+  }
   loopId = requestAnimationFrame(gameLoop);
 }
 
-// === DRAWING FUNCTIONS ===
-function drawRect(x, y, w, h, color) {
-  ctx.fillStyle = color;
-  ctx.fillRect(x, y, w, h);
+// Update logic
+function update() {
+    // 👇 REMOVE these 3 lines — they're interfering:
+    // if (keysPressed["ArrowUp"]) moveDirection = -1;
+    // else if (keysPressed["ArrowDown"]) moveDirection = 1;
+    // else moveDirection = 0;
+  
+    // ✅ NEW: use keys independently
+    let keyDirection = 0;
+    if (keysPressed["ArrowUp"]) keyDirection = -1;
+    else if (keysPressed["ArrowDown"]) keyDirection = 1;
+  
+    // ✅ Combine key or mobile move direction
+    const direction = moveDirection !== 0 ? moveDirection : keyDirection;
+  
+    // ✅ Move paddle using direction
+    if (direction === -1) {
+      playerY = Math.max(0, playerY - paddleSpeed);
+    } else if (direction === 1) {
+      playerY = Math.min(canvas.height - paddleHeight, playerY + paddleSpeed);
+    }
+  
+    // 👇 rest of your update() logic
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+    if (ballY <= 0 || ballY >= canvas.height) ballSpeedY = -ballSpeedY;
+    aiY += ((ballY - (aiY + paddleHeight / 2))) * 0.1;
+  
+    if (ballX - ballRadius < paddleWidth && ballY > playerY && ballY < playerY + paddleHeight) {
+      ballSpeedX = -ballSpeedX;
+    }
+  
+    if (ballX + ballRadius > canvas.width - paddleWidth && ballY > aiY && ballY < aiY + paddleHeight) {
+      ballSpeedX = -ballSpeedX;
+    }
+  
+    if (ballX < 0) {
+      aiScore++;
+      checkGameOver();
+      resetBall();
+    } else if (ballX > canvas.width) {
+      playerScore++;
+      checkGameOver();
+      resetBall();
+    }
 }
 
-function drawCircle(x, y, r, color) {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.fill();
-}
+// Draw everything
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#2e8b57";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-function drawText(text, x, y, size = 24) {
+  // Paddles
   ctx.fillStyle = "#fff";
-  ctx.font = `${size}px Arial`;
-  ctx.fillText(text, x, y);
+  ctx.fillRect(0, playerY, paddleWidth, paddleHeight);
+  ctx.fillRect(canvas.width - paddleWidth, aiY, paddleWidth, paddleHeight);
+
+  // Ball
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#90ee90";
+  ctx.fill();
+
+  // Scores
+  ctx.fillStyle = "#fff";
+  ctx.font = "24px Arial";
+  ctx.fillText(`Cole: ${playerScore}`, 100, 30);
+  ctx.fillText(`Ting: ${aiScore}`, canvas.width - 150, 30);
+
+  // Pause text
+  if (gamePaused) {
+    ctx.font = "36px Arial";
+    ctx.fillText("⏸ Pause", canvas.width / 2 - 60, canvas.height / 2);
+  }
 }
 
-// === GAME LOGIC ===
+// Utility
 function resetBall() {
   ballX = canvas.width / 2;
   ballY = canvas.height / 2;
@@ -85,113 +151,28 @@ function checkGameOver() {
       ? "🎉 Vous avez gagné !"
       : "Ting 🐭 a gagné...";
     document.getElementById("message").textContent = message;
-    document.getElementById("overlay").style.display = "block";
-
-    const startBtn = document.getElementById("startBtn");
-    if (startBtn) startBtn.style.display = "block";
+    document.getElementById("overlay").style.display = "flex";
+    document.getElementById("startBtn").style.display = "block";
   }
 }
 
-function update() {
-  if (!gameRunning || gamePaused) return;
-
-  // Player movement
-  if (keysPressed["ArrowUp"]) {
-    playerY = Math.max(0, playerY - paddleSpeed * 1.5);
-  }
-  if (keysPressed["ArrowDown"]) {
-    playerY = Math.min(canvas.height - paddleHeight, playerY + paddleSpeed * 1.5);
-  }
-
-  // Ball movement
-  ballX += ballSpeedX;
-  ballY += ballSpeedY;
-
-  // Bounce on top/bottom
-  if (ballY <= 0 || ballY >= canvas.height) ballSpeedY = -ballSpeedY;
-
-  // AI movement
-  aiY += ((ballY - (aiY + paddleHeight / 2))) * 0.1;
-
-  // Collisions
-  if (
-    ballX - ballRadius < 10 &&
-    ballY > playerY &&
-    ballY < playerY + paddleHeight
-  ) {
-    ballSpeedX = -ballSpeedX;
-  }
-
-  if (
-    ballX + ballRadius > canvas.width - 10 &&
-    ballY > aiY &&
-    ballY < aiY + paddleHeight
-  ) {
-    ballSpeedX = -ballSpeedX;
-  }
-
-  // Scoring
-  if (ballX < 0) {
-    aiScore++;
-    checkGameOver();
-    resetBall();
-  } else if (ballX > canvas.width) {
-    playerScore++;
-    checkGameOver();
-    resetBall();
-  }
+// Controls
+function startMove(dir) {
+  moveDirection = dir;
 }
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawRect(0, 0, canvas.width, canvas.height, "#2e8b57");
-  drawRect(0, playerY, paddleWidth, paddleHeight, "#fff");
-  drawRect(canvas.width - paddleWidth, aiY, paddleWidth, paddleHeight, "#fff");
-  drawCircle(ballX, ballY, ballRadius, "#90ee90");
-  drawText(`Cole: ${playerScore}`, 100, 30);
-  drawText(`Ting: ${aiScore}`, canvas.width - 150, 30);
-
-  if (gamePaused) {
-    drawText("⏸ Pause", canvas.width / 2 - 50, canvas.height / 2, 36);
-  }
+function stopMove() {
+  moveDirection = 0;
 }
-
-// === GAME LOOP ===
-function gameLoop() {
-  loopId = null;
-  update();
-  draw();
-  if (gameRunning && !gamePaused) {
-    loopId = requestAnimationFrame(gameLoop);
-  }
-}
-
-// === CONTROLS ===
-function moveUp() {
-  if (playerY > 0) playerY -= paddleSpeed;
-}
-
-function moveDown() {
-  if (playerY + paddleHeight < canvas.height) playerY += paddleSpeed;
-}
-
 function togglePause() {
   if (!gameRunning) return;
   gamePaused = !gamePaused;
-
-  const pauseBtn = document.getElementById("pauseBtn");
-  if (pauseBtn) pauseBtn.textContent = gamePaused ? "▶ Reprendre" : "⏸ Pause";
-
-  if (!gamePaused && loopId === null) {
-    loopId = requestAnimationFrame(gameLoop);
-  }
+  document.getElementById("pauseBtn").textContent = gamePaused ? "▶ Reprendre" : "⏸ Pause";
 }
-
 function restartGame() {
   initGame();
 }
 
-// === RESPONSIVE CANVAS ===
+// Resize for responsiveness
 function resizeCanvas() {
   const ratio = canvas.width / canvas.height;
   const width = Math.min(window.innerWidth - 20, 800);
@@ -200,6 +181,3 @@ function resizeCanvas() {
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
-
-// NOTE: Removed auto-call to initGame();
-

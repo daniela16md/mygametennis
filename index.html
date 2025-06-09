@@ -7,15 +7,24 @@
   <link rel="stylesheet" href="tennis.css" />
 </head>
 <body>
-  <!-- Game Canvas -->
+  <!-- Start Button -->
   <button id="startBtn" onclick="initGame()">▶ Démarrer le Jeu</button>
 
+  <!-- Game Canvas -->
   <canvas id="gameCanvas" width="800" height="500"></canvas>
 
   <!-- Mobile Control Buttons -->
   <div id="mobileControls">
-    <button onclick="moveUp()">⬆️</button>
-    <button onclick="moveDown()">⬇️</button>
+    <button 
+      onmousedown="startMove(-1)" onmouseup="stopMove()"
+      ontouchstart="startMove(-1)" ontouchend="stopMove()"
+    >⬆️</button>
+
+    <button 
+      onmousedown="startMove(1)" onmouseup="stopMove()"
+      ontouchstart="startMove(1)" ontouchend="stopMove()"
+    >⬇️</button>
+
     <button id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
   </div>
 
@@ -25,9 +34,7 @@
     <button onclick="restartGame()">Restart</button>
   </div>
 
-  <!-- JS Game Script -->
+  <!-- Game Script -->
   <script src="tennis.js"></script>
 </body>
 </html>
-
-  

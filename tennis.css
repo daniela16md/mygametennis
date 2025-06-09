@@ -1,6 +1,7 @@
 /* Whole page white background and center the canvas */
 body {
-    margin: 0;
+    margin: 5px;
+    margin-top: 50px;
     height: 100vh;
     background: white;
     display: flex;
@@ -100,3 +101,13 @@ button:active {
 #startBtn:hover {
     background-color: #2e8b57;
 } 
+footer {
+    margin-top: auto;
+    padding: 15px 0;
+    text-align: center;
+    font-size: 16px;
+    color: #145214;
+    background-color: #f0f0f0;
+    width: 100%;
+    position: relative;
+}
