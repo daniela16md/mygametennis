@@ -174,12 +174,24 @@ function restartGame() {
 
 // Resize for responsiveness
 function resizeCanvas() {
-    // Define max width and height you want for the game canvas
-    const maxWidth = window.innerWidth - 20;
-    const maxHeight = window.innerHeight - 120; // leave room for buttons and footer
-  
-    // Keep aspect ratio same as original canvas (800x500)
     const aspectRatio = 800 / 500;
+    const marginVertical = 120;  // space for buttons/footer
+    const marginHorizontal = 20; // small horizontal margin
+  
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+  
+    let maxWidth, maxHeight;
+  
+    if (vw > vh) {
+      // Landscape: limit height more strictly to avoid too tall canvas
+      maxHeight = vh - marginVertical * 1.5; // smaller height in landscape
+      maxWidth = vw - marginHorizontal;
+    } else {
+      // Portrait: more height available
+      maxHeight = vh - marginVertical;
+      maxWidth = vw - marginHorizontal;
+    }
   
     let newWidth = maxWidth;
     let newHeight = newWidth / aspectRatio;
@@ -189,11 +201,11 @@ function resizeCanvas() {
       newWidth = newHeight * aspectRatio;
     }
   
-    // Set actual canvas size (pixel size)
-    canvas.width = 800;  // fixed logical pixels for drawing
+    // Set canvas internal pixel size fixed (for game logic)
+    canvas.width = 800;
     canvas.height = 500;
   
-    // Set CSS size to fit the screen with aspect ratio preserved
+    // Set CSS size to scale canvas visually
     canvas.style.width = newWidth + "px";
     canvas.style.height = newHeight + "px";
 }
