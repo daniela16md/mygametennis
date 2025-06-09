@@ -1,0 +1,102 @@
+/* Whole page white background and center the canvas */
+body {
+    margin: 0;
+    height: 100vh;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+  
+  /* Canvas with green tennis court background */
+#gameCanvas {
+    background-color: #2e8b57; /* sea green */
+    display: block;
+    border: 3px solid #145214; /* darker green border */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 100, 0, 0.7);
+    max-width: 100%;
+    height: auto;
+}
+  
+  /* Mobile control buttons container */
+#mobileControls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+  
+  /* Style buttons nicely */
+button {
+    background-color: #4CAF50; /* green */
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+    user-select: none;
+}
+  
+button:hover {
+    background-color: #45a049;
+}
+  
+button:active {
+    transform: translateY(2px);
+}
+  
+  /* Game over overlay */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: #145214;
+    z-index: 10;
+    display: none;
+    text-align: center;
+}
+#overlay h1#message {
+    margin: 150px;
+    padding: 0 20px;
+    font-size: 24px;
+}
+  
+#overlay button {
+    margin-top: 5px;
+    padding: 15px 25px;
+    font-size: 22px;
+    background-color: #145214;
+    color: white;
+}
+  
+  #overlay button:hover {
+    background-color: #2e8b57;
+}
+#startBtn {
+    margin-bottom: 20px;
+    padding: 12px 24px;
+    font-size: 20px;
+    background-color: #145214;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+  
+#startBtn:hover {
+    background-color: #2e8b57;
+} 

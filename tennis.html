@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jeu de Tennis</title>
+  <link rel="stylesheet" href="tennis.css" />
+</head>
+<body>
+  <!-- Game Canvas -->
+  <button id="startBtn" onclick="initGame()">▶ Démarrer le Jeu</button>
+
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+  <!-- Mobile Control Buttons -->
+  <div id="mobileControls">
+    <button onclick="moveUp()">⬆️</button>
+    <button onclick="moveDown()">⬇️</button>
+    <button id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+  </div>
+
+  <!-- Game Over Overlay -->
+  <div id="overlay">
+    <h1 id="message">Game Over</h1>
+    <button onclick="restartGame()">Rejouer</button>
+  </div>
+
+  <!-- JS Game Script -->
+  <script src="tennis.js"></script>
+</body>
+</html>
+
+  
