@@ -181,8 +181,8 @@ function resizeCanvas() {
       newWidth = newHeight * aspectRatio;
     }
   
-    canvas.width = 700;  
-    canvas.height = 400;
+    canvas.width = 750;  
+    canvas.height = 450;
   
     canvas.style.width = newWidth + "px";
     canvas.style.height = newHeight + "px";
